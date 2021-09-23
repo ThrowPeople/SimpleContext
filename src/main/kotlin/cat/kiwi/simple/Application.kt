@@ -25,6 +25,7 @@ class Application {
             }
 
             simpleRouter.get("/ping") { ctx ->
+                ctx.end("pong")
             }
             simpleRouter.get("/foo") { ctx ->
                 ctx.badRequest()
