@@ -1,4 +1,4 @@
-package cat.kiwi.simple.application
+package cat.kiwi.simple
 
 import cat.kiwi.simple.context.SimpleBuilder
 import cat.kiwi.simple.context.context.*
