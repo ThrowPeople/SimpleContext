@@ -19,8 +19,9 @@ val SimpleContext.body: String
         return req
     }
 
-fun SimpleContext.write(content: String) {
+fun SimpleContext.write(content: String) : SimpleContext{
     respPayload[respPayload.lastIndex] = respPayload[respPayload.lastIndex] + content
+    return this
 }
 
 fun SimpleContext.end() {

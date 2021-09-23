@@ -1,7 +1,10 @@
 package cat.kiwi.simple
 
 import cat.kiwi.simple.context.SimpleBuilder
-import cat.kiwi.simple.context.context.*
+import cat.kiwi.simple.context.context.badRequest
+import cat.kiwi.simple.context.context.end
+import cat.kiwi.simple.context.context.params
+import cat.kiwi.simple.context.context.write
 import cat.kiwi.simple.context.logger.Logger
 import cat.kiwi.simple.context.logger.info
 import cat.kiwi.simple.context.router.SimpleRouter
@@ -14,7 +17,7 @@ class Application {
             val simpleRouter = SimpleRouter()
 
             simpleRouter.get("/") { ctx ->
-                if (ctx.params.size == 0){
+                if (ctx.params.size == 0) {
                     ctx.end("No params get")
                 } else {
                     Logger.info("Params: ${ctx.params}")
