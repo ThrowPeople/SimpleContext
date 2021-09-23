@@ -9,12 +9,26 @@ import cat.kiwi.simple.context.logger.Logger
 import cat.kiwi.simple.context.logger.info
 import cat.kiwi.simple.context.router.SimpleRouter
 import cat.kiwi.simple.context.router.get
+import cat.kiwi.simple.context.template.SimpleTemplate
+import java.sql.Timestamp
+import java.util.*
+
 
 class Application {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
             val simpleRouter = SimpleRouter()
+            simpleRouter.get("/static_page") { ctx ->
+                ctx.end(SimpleTemplate.renderStaticPage("index.html"))
+            }
+            simpleRouter.get("/dynamic_page") {ctx ->
+                val contents = HashMap<String,String>()
+
+                contents["time"] = Timestamp(Date().time).toString()
+
+                ctx.end(SimpleTemplate.renderDynamicPage("template.html", contents))
+            }
 
             simpleRouter.get("/") { ctx ->
                 if (ctx.params.size == 0) {

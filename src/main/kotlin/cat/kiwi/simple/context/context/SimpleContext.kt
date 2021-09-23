@@ -7,6 +7,7 @@ import cat.kiwi.simple.context.template.SimpleTemplate
 import cat.kiwi.simple.context.template.SimpleTemplate.renderBadRequest
 import cat.kiwi.simple.context.template.SimpleTemplate.renderNotFound
 import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.io.PrintWriter
 
 class SimpleContext(var req: String, var bOut: PrintWriter) {
