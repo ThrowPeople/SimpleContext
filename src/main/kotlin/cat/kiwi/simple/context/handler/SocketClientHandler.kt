@@ -1,8 +1,8 @@
 package cat.kiwi.simple.context.handler
 
 import cat.kiwi.simple.context.context.SimpleContext
-import cat.kiwi.simple.context.logger.Logger
-import cat.kiwi.simple.context.logger.info
+import cat.kiwi.simple.context.context.SimpleGetContext
+import cat.kiwi.simple.context.context.SimplePostContext
 import cat.kiwi.simple.context.router.SimpleRouter
 import cat.kiwi.simple.context.template.SimpleTemplate
 import java.io.BufferedReader
@@ -13,12 +13,13 @@ import java.net.Socket
 class SocketClientHandler(var clientSocket: Socket, var router: SimpleRouter) : Runnable {
     val bOut = PrintWriter(clientSocket.getOutputStream(), true)
     private val bIn = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
-    val req: String = bIn.readLine()
+
+    val req: String = bIn.readALl()
 
     override fun run() {
         when (req.reqType) {
             "GET" -> getHandler()
-            "POST" -> todoHandler()
+            "POST" -> postHandler()
 
             "OPTIONS" -> todoHandler()
             "HEAD" -> todoHandler()
@@ -33,15 +34,48 @@ class SocketClientHandler(var clientSocket: Socket, var router: SimpleRouter) : 
 
 
 fun SocketClientHandler.getHandler() {
-    val path = req.path
-    val ctx = this.router.httpGet[path]
+    try {
+        val path = req.path
+        val ctx = this.router.httpGet[path]
 
-    if (ctx != null) {
-        ctx(SimpleContext(req, bOut))
-    } else {
-        bOut.println(SimpleTemplate.renderNotFound())
+        if (ctx != null) {
+            ctx(SimpleGetContext(req, bOut))
+
+        } else {
+            bOut.println(SimpleTemplate.renderNotFound())
+        }
+
+    } catch (e: Exception) {
+        bOut.println(SimpleTemplate.renderBadRequest())
+    }
+
+}
+
+fun SocketClientHandler.postHandler() {
+    try {
+        val path = req.path
+        val ctx = this.router.httpPost[path]
+
+        if (ctx != null) {
+            ctx(SimplePostContext(req, bOut))
+
+        } else {
+            bOut.println(SimpleTemplate.renderNotFound())
+        }
+
+    } catch (e: Exception) {
+        bOut.println(SimpleTemplate.renderBadRequest())
     }
 }
+
+class Body(val content: String) {
+
+
+    override fun toString(): String {
+        return content
+    }
+}
+
 
 fun SocketClientHandler.todoHandler() {
     bOut.println(SimpleTemplate.renderOK("TODO"))
@@ -51,16 +85,6 @@ fun SocketClientHandler.todoHandler() {
 fun SocketClientHandler.unknownHandler() {
     bOut.println(SimpleTemplate.renderOK("TODO"))
 }
-
-val String.isGet: Boolean
-    get() {
-        if (this.isEmpty()) return false
-
-        val payloadHeader = this.split(" ")[0]
-        if (payloadHeader == "GET") return true
-
-        return false
-    }
 
 val String.firstLine: String?
     get() {
@@ -84,7 +108,14 @@ val String.path: String?
 
 val String.reqType: String
     get() {
-        if (this.isGet) return "GET"
-        // TODO: implement other http methods
-        return "UNKNOWN"
+        if (this.isEmpty()) return "UNKNOWN"
+        return this.split(" ")[0]
     }
+
+fun BufferedReader.readALl(): String{
+    val tmp = arrayListOf<String>()
+    while (this.ready()) {
+        tmp.add(this.read().toChar().toString())
+    }
+    return tmp.joinToString("")
+}

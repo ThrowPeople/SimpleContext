@@ -1,14 +1,12 @@
 package cat.kiwi.simple
 
 import cat.kiwi.simple.context.SimpleBuilder
-import cat.kiwi.simple.context.context.badRequest
-import cat.kiwi.simple.context.context.end
-import cat.kiwi.simple.context.context.params
-import cat.kiwi.simple.context.context.write
+import cat.kiwi.simple.context.context.*
 import cat.kiwi.simple.context.logger.Logger
 import cat.kiwi.simple.context.logger.info
 import cat.kiwi.simple.context.router.SimpleRouter
 import cat.kiwi.simple.context.router.get
+import cat.kiwi.simple.context.router.post
 import cat.kiwi.simple.context.template.SimpleTemplate
 import java.sql.Timestamp
 import java.util.*
@@ -19,6 +17,14 @@ class Application {
         @JvmStatic
         fun main(args: Array<String>) {
             val simpleRouter = SimpleRouter()
+            simpleRouter.post("/p") {ctx->
+                Logger.info("Method: ${ctx.method}")
+                Logger.info("Body: ${ctx.body}")
+                ctx.end("done.")
+            }
+            simpleRouter.get("/unicode"){ctx ->
+                ctx.end("asdasd")
+            }
             simpleRouter.get("/static_page") { ctx ->
                 ctx.end(SimpleTemplate.renderStaticPage("index.html"))
             }
@@ -48,7 +54,7 @@ class Application {
                 ctx.badRequest()
             }
 
-            SimpleBuilder.listen("127.0.0.1", 8080).route(simpleRouter).create().start()
+            SimpleBuilder.listen("::1", 8080).route(simpleRouter).create().start()
         }
     }
 }

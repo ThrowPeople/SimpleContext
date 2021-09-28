@@ -32,6 +32,7 @@ object SimpleTemplate {
 
         return ""
     }
+
     fun renderOK(content: String = ""): String {
         return "HTTP/1.1 200 OK\n" +
                 "Content-Length: ${content.length}\n" +
