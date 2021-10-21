@@ -1,8 +1,9 @@
 package cat.kiwi.simple.context.handler
 
-import cat.kiwi.simple.context.context.SimpleContext
 import cat.kiwi.simple.context.context.SimpleGetContext
 import cat.kiwi.simple.context.context.SimplePostContext
+import cat.kiwi.simple.context.logger.Logger
+import cat.kiwi.simple.context.logger.warn
 import cat.kiwi.simple.context.router.SimpleRouter
 import cat.kiwi.simple.context.template.SimpleTemplate
 import java.io.BufferedReader
@@ -17,6 +18,7 @@ class SocketClientHandler(var clientSocket: Socket, var router: SimpleRouter) : 
     val req: String = bIn.readALl()
 
     override fun run() {
+//        println(req)
         when (req.reqType) {
             "GET" -> getHandler()
             "POST" -> postHandler()
@@ -112,10 +114,30 @@ val String.reqType: String
         return this.split(" ")[0]
     }
 
-fun BufferedReader.readALl(): String{
+fun BufferedReader.readALl(): String {
     val tmp = arrayListOf<String>()
-    while (this.ready()) {
-        tmp.add(this.read().toChar().toString())
+    var contentLength = 0
+    while (true) {
+        val line = this.readLine()
+        if (line.contains("Content-Length: ")) {
+            try {
+                contentLength = line.split("Content-Length: ")[1].toInt()
+            } catch (e: Exception) {
+                Logger.warn("Invalid content length")
+                return ""
+            }
+        }
+        if (line == "") {
+            break
+        }
+        tmp.add(line)
     }
-    return tmp.joinToString("")
+    if (contentLength != 0) {
+        val bodyArray = arrayListOf<Byte>()
+        for (i in 0 until contentLength) {
+            bodyArray.add(this.read().toByte())
+        }
+        tmp.add(String(bodyArray.toByteArray()))
+    }
+    return tmp.joinToString("\n")
 }

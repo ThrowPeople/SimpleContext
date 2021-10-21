@@ -6,6 +6,7 @@ import cat.kiwi.simple.context.logger.Logger
 import cat.kiwi.simple.context.logger.warn
 import cat.kiwi.simple.context.template.SimpleTemplate.renderBadRequest
 import cat.kiwi.simple.context.template.SimpleTemplate.renderNotFound
+import cat.kiwi.simple.context.template.SimpleTemplate.renderOK
 import java.io.PrintWriter
 
 
@@ -30,13 +31,17 @@ fun SimpleContext.write(content: String): SimpleContext {
 
 fun SimpleContext.end() {
     respPayload.add(1, "Content-Length: ${respPayload.last().toByteArray().size}")
-    this.bOut.println(respPayload.joinToString("\n"))
+    this.bOut.println(respPayload.joinToString("\r\n"))
 }
 
 fun SimpleContext.end(content: String) {
     this.write(content)
 
     this.end()
+}
+
+fun SimpleContext.httpOK() {
+    this.bOut.println(renderOK())
 }
 
 fun SimpleContext.badRequest() {

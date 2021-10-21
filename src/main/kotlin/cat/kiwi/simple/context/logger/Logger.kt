@@ -1,24 +1,31 @@
 package cat.kiwi.simple.context.logger
 
 val enable_debug = false
-object Logger {
-}
+
+object Logger
 
 fun Logger.info(obj: Any?) {
-    println("[INFO] $obj")
+    Thread {
+        println("[INFO] $obj")
+    }.start()
 }
 
 fun Logger.warn(obj: Any?) {
-    if (obj is Exception && enable_debug) {
-        print("[WARN] ")
-        obj.printStackTrace()
-    } else {
-        println("[WARN] $obj")
-    }
+    Thread {
+        if (obj is Exception && enable_debug) {
+            print("[WARN] ")
+            obj.printStackTrace()
+        } else {
+            println("[WARN] $obj")
+        }
+    }.start()
+
 }
 
 fun Logger.debug(obj: Any?) {
-    if (enable_debug) {
-        println("[DEBU] $obj")
-    }
+    Thread {
+        if (enable_debug) {
+            println("[DEBU] $obj")
+        }
+    }.start()
 }

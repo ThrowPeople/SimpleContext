@@ -8,3 +8,8 @@ val SimplePostContext.body: String
     get() {
         return req.split("\n").last()
     }
+
+
+fun SimplePostContext.setHandler() {
+
+}

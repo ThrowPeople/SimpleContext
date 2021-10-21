@@ -11,25 +11,23 @@ import cat.kiwi.simple.context.template.SimpleTemplate
 import java.sql.Timestamp
 import java.util.*
 
-
 class Application {
     companion object {
+
         @JvmStatic
         fun main(args: Array<String>) {
             val simpleRouter = SimpleRouter()
-            simpleRouter.post("/p") {ctx->
-                Logger.info("Method: ${ctx.method}")
-                Logger.info("Body: ${ctx.body}")
-                ctx.end("done.")
+            simpleRouter.get("/ok") { ctx ->
+                ctx.end("${Date()}\n")
             }
-            simpleRouter.get("/unicode"){ctx ->
+            simpleRouter.get("/unicode") { ctx ->
                 ctx.end("asdasd")
             }
             simpleRouter.get("/static_page") { ctx ->
                 ctx.end(SimpleTemplate.renderStaticPage("index.html"))
             }
-            simpleRouter.get("/dynamic_page") {ctx ->
-                val contents = HashMap<String,String>()
+            simpleRouter.get("/dynamic_page") { ctx ->
+                val contents = HashMap<String, String>()
 
                 contents["time"] = Timestamp(Date().time).toString()
 
@@ -54,7 +52,7 @@ class Application {
                 ctx.badRequest()
             }
 
-            SimpleBuilder.listen("::1", 8080).route(simpleRouter).create().start()
+            SimpleBuilder.listen("127.0.0.1", 8081).route(simpleRouter).create().start()
         }
     }
 }

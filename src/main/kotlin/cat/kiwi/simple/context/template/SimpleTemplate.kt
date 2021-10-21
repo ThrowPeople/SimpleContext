@@ -9,9 +9,9 @@ val webroot = "webroot/"
 object SimpleTemplate {
     fun renderDynamicPage(path: String, contents: HashMap<String, String>):String {
         try {
-            val inputStream = javaClass.classLoader.getResourceAsStream("webroot/$path")
+            val inputStream = javaClass.classLoader.getResourceAsStream("$webroot/$path")
             var payload = InputStreamReader(inputStream, Charsets.UTF_8).readText()
-            contents.forEach { t, u ->
+            contents.forEach { (t, u) ->
                 payload = payload.replace("{{.$t}}", u)
             }
             return payload
@@ -24,7 +24,7 @@ object SimpleTemplate {
     }
     fun renderStaticPage(path: String): String {
         try {
-            val inputStream = javaClass.classLoader.getResourceAsStream("webroot/$path")
+            val inputStream = javaClass.classLoader.getResourceAsStream("$webroot/$path")
             return InputStreamReader(inputStream, Charsets.UTF_8).readText()
         } catch (e: Exception) {
             Logger.warn(e)
