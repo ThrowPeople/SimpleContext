@@ -1,7 +1,7 @@
-package cat.kiwi.simple.application.controller
+package cat.kiwi.simple.examples.mvc.controller
 
-import cat.kiwi.simple.application.service.ExampleService
-import cat.kiwi.simple.application.service.impl.ExampleServiceImpl
+import cat.kiwi.simple.examples.mvc.service.ExampleService
+import cat.kiwi.simple.examples.mvc.service.impl.ExampleServiceImpl
 import cat.kiwi.simple.context.context.HttpGetContext
 import cat.kiwi.simple.context.controller.BaseController
 import cat.kiwi.simple.context.router.SimpleRouter
@@ -16,6 +16,7 @@ class ExamplePageController : BaseController {
         val resultMap = HashMap<String, Any>()
 
         val dateTime = greetingService.getCalender()
+        ctx.getHeader("")
 
         resultMap["time"] = dateTime
         ctx.end(resultMap.toString())

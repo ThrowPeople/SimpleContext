@@ -1,4 +1,4 @@
-package cat.kiwi.simple.application.mapper
+package cat.kiwi.simple.examples.mvc.mapper
 
 import java.util.Calendar
 

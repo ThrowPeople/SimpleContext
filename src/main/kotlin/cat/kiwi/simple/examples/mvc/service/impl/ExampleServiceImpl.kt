@@ -1,7 +1,7 @@
-package cat.kiwi.simple.application.service.impl
+package cat.kiwi.simple.examples.mvc.service.impl
 
-import cat.kiwi.simple.application.mapper.ExampleMapper
-import cat.kiwi.simple.application.service.ExampleService
+import cat.kiwi.simple.examples.mvc.mapper.ExampleMapper
+import cat.kiwi.simple.examples.mvc.service.ExampleService
 
 class ExampleServiceImpl : ExampleService {
     private val exampleMapper = ExampleMapper()
