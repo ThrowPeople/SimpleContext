@@ -1,6 +1,7 @@
 package cat.kiwi.simple.context.context.impl
 
 import cat.kiwi.simple.context.context.HttpRoutingContext
+import cat.kiwi.simple.context.status.HttpResponseStatus
 import cat.kiwi.simple.context.utils.ext.readHeaders
 import java.io.BufferedReader
 import java.io.PrintWriter
@@ -11,7 +12,7 @@ open class HttpRoutingContextImpl(
 ): HttpRoutingContext {
     val internalHeader: Map<String, String> = bIn.readHeaders()
 
-    var response = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n"
+    private var response = HttpResponseStatus.OK_200
 
     override fun getHeader(key: String): String? {
         return internalHeader[key]

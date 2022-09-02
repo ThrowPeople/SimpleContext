@@ -2,10 +2,13 @@ package cat.kiwi.simple.context.handler.impl
 
 import cat.kiwi.simple.context.consts.HttpProtocol
 import cat.kiwi.simple.context.consts.HttpRequestMethod
+import cat.kiwi.simple.context.context.HttpGetContext
+import cat.kiwi.simple.context.context.HttpRoutingContext
 import cat.kiwi.simple.context.context.impl.HttpGetContextImpl
 import cat.kiwi.simple.context.context.impl.HttpPostContextImpl
 import cat.kiwi.simple.context.handler.SocketClientHandler
 import cat.kiwi.simple.context.impl.SimpleHttpServerImpl
+import cat.kiwi.simple.context.status.HttpResponseStatus
 import cat.kiwi.simple.context.utils.ext.ByteSize
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -31,32 +34,42 @@ class SocketClientHandlerImpl(private val clientSocket: Socket, val simpleContex
         var contentLength = 0
 
         try {
-
             when (method) {
             HttpRequestMethod.GET -> {
-                interlRouter.httpGet[path]!!.invoke(HttpGetContextImpl(bIn, bOut))
+                val httpRoutingContext: ((HttpGetContext) -> Unit)? = interlRouter.httpGet[path]
+                if (httpRoutingContext == null) {
+                    bOut.println(HttpResponseStatus.NOT_FOUND_404)
+                } else {
+                    interlRouter.httpGet[path]!!.invoke(HttpGetContextImpl(bIn, bOut))
+                }
 
-                bOut.close()
                 clientSocket.close()
             }
 
             HttpRequestMethod.POST -> {
-                interlRouter.httpPost[path]!!.invoke(HttpPostContextImpl(bIn, bOut))
+                val httpRoutingContext: ((HttpPostContextImpl) -> Unit)? = interlRouter.httpPost[path]
+                if (httpRoutingContext == null) {
+                    bOut.println(HttpResponseStatus.NOT_FOUND_404)
+                } else {
+                    interlRouter.httpPost[path]!!.invoke(HttpPostContextImpl(bIn, bOut))
+                }
 
-                bOut.close()
                 clientSocket.close()
             }
 
             else -> {
-                bOut.println("HTTP/1.1 405 Method Not Allowed\n")
+                bOut.println(HttpResponseStatus.NOT_IMPLEMENTED_501)
             }
         }
 
 
+
         } catch (e: Exception) {
+            bOut.println(HttpResponseStatus.INTERNAL_SERVER_ERROR_500)
             e.printStackTrace()
         } finally {
-            clientSocket.close()
+            bOut.close()
+            if (!clientSocket.isClosed) clientSocket.close()
         }
 
         return ""
