@@ -12,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.mybatis:mybatis:3.5.10")
+    implementation("com.zaxxer:HikariCP:5.0.1")
     testImplementation(kotlin("test"))
 }
 

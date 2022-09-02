@@ -1,20 +1,28 @@
 package cat.kiwi.simple.context.router
 
-import cat.kiwi.simple.context.context.SimpleContext
-import cat.kiwi.simple.context.context.SimpleGetContext
-import cat.kiwi.simple.context.context.SimplePostContext
+import cat.kiwi.simple.context.context.HttpGetContext
+import cat.kiwi.simple.context.context.HttpPostContext
+import cat.kiwi.simple.context.context.HttpRoutingContext
+import cat.kiwi.simple.context.controller.BaseController
+import cat.kiwi.simple.context.router.impl.SimpleRouterImpl
 
-class SimpleRouter() {
-    val httpGet = HashMap<String, (SimpleGetContext) -> Unit>()
-    val httpPost = HashMap<String, (SimplePostContext) -> Unit>()
+interface SimpleRouter {
+    companion object {
+        @JvmStatic
+        fun build() = SimpleRouterImpl()
+    }
 
-}
+    fun bindController(controller: BaseController)
+    fun route(path: String, response: (HttpRoutingContext) -> Unit)
+    fun get(path: String, response: (HttpGetContext) -> Unit)
+    fun post(path: String, response: (HttpPostContext) -> Unit)
+    fun put(path: String, response: (HttpRoutingContext) -> Unit)
+    fun delete(path: String, response: (HttpRoutingContext) -> Unit)
+    fun patch(path: String, response: (HttpRoutingContext) -> Unit)
+    fun head(path: String, response: (HttpRoutingContext) -> Unit)
+    fun options(path: String, response: (HttpRoutingContext) -> Unit)
+    fun trace(path: String, response: (HttpRoutingContext) -> Unit)
+    fun connect(path: String, response: (HttpRoutingContext) -> Unit)
 
-fun SimpleRouter.get(path: String, resp: (SimpleGetContext) -> Unit): SimpleRouter {
-    httpGet[path] = resp
-    return this
-}
-fun SimpleRouter.post(path: String, resp: (SimplePostContext) -> Unit): SimpleRouter {
-    httpPost[path] =  resp
-    return this
+
 }
