@@ -17,12 +17,12 @@ open class HttpRoutingContextImpl(
         return internalHeader[key]
     }
 
-    override fun write(data: String) {
-        response+= data
+    override fun write(data: Any) {
+        response+= data.toString()
     }
 
-    override fun writeln(data: String) {
-        response+=data
+    override fun writeln(data: Any) {
+        response+=data.toString()
         response+="\r\n"
     }
 
@@ -31,8 +31,8 @@ open class HttpRoutingContextImpl(
         bOut.close()
     }
 
-    override fun end(data: String) {
-        response+=data
+    override fun end(data: Any) {
+        response+=data.toString()
         bOut.print(response)
         bOut.close()
     }

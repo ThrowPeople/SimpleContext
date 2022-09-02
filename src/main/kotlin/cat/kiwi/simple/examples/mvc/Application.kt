@@ -17,9 +17,6 @@ class Application {
 
             simpleRouter.bindController(ExamplePageController())
 
-            simpleRouter.get("/ping") { ctx ->
-                ctx.end()
-            }
             server.route(simpleRouter).listen("127.0.0.1", 31021).start()
 
         }

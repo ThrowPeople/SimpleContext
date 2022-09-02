@@ -9,7 +9,7 @@ import cat.kiwi.simple.context.router.SimpleRouter
 class ExamplePageController : BaseController {
     private val greetingService: ExampleService = ExampleServiceImpl()
     override fun register(router: SimpleRouter) {
-        router.get("/getCalendar", ::getCalender)
+        router.get("/getCalender", ::getCalender)
     }
 
     private fun getCalender(ctx: HttpGetContext) {
@@ -19,6 +19,6 @@ class ExamplePageController : BaseController {
         ctx.getHeader("")
 
         resultMap["time"] = dateTime
-        ctx.end(resultMap.toString())
+        ctx.end(resultMap)
     }
 }
