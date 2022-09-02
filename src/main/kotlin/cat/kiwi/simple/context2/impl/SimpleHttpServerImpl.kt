@@ -1,8 +1,9 @@
 package cat.kiwi.simple.context2.impl
 
 import cat.kiwi.simple.context2.SimpleHttpServer
-import cat.kiwi.simple.context2.SimpleRouter
+import cat.kiwi.simple.context2.router.SimpleRouter
 import cat.kiwi.simple.context2.handler.impl.SocketClientHandlerImpl
+import cat.kiwi.simple.context2.router.impl.SimpleRouterImpl
 import java.net.BindException
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -31,27 +32,34 @@ class SimpleHttpServerImpl : SimpleHttpServer {
         return this
     }
 
-    override fun route(simpleRouter: SimpleRouter): SimpleHttpServer {
-        TODO("Not yet implemented")
+
+    var internalRouter = SimpleRouterImpl()
+    override fun route(simpleRouter: SimpleRouterImpl): SimpleHttpServer {
+        internalRouter = simpleRouter
+        return this
     }
 
     override fun start(): SimpleHttpServer {
+        try {
+            serverSocket = ServerSocket(port, 1000, InetAddress.getByName(address))
+            serverSocket.reuseAddress = true
+
+            println("Server started at ${serverSocket.localSocketAddress}")
+        } catch (e: BindException) {
+            println("Port $port is already in use, trying next port")
+        }
+
         while (true) {
+            var clientSocket: Socket? = null
+
             try {
-                serverSocket = ServerSocket(port, 1000, InetAddress.getByName(address))
-                serverSocket.reuseAddress = true
-
-                println("Server started at ${serverSocket.localSocketAddress}")
-
-                val clientSocket = serverSocket.accept()
+                clientSocket = serverSocket.accept()
                 Thread(SocketClientHandlerImpl(clientSocket, this)).start()
-
-
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
                 try {
-                    serverSocket.close()
+                    clientSocket?.close()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
