@@ -6,9 +6,10 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
     `maven-publish`
 }
-
-group = "me.kiwi"
-version = "1.0-SNAPSHOT"
+val artifact = "SimpleContext"
+val ver = "1.0-SNAPSHOT"
+group = "cat.kiwi"
+version = ver
 
 repositories {
     mavenCentral()
@@ -38,9 +39,9 @@ artifacts {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = groupId
-            artifactId = artifactId
-            version = version
+            groupId = group.toString()
+            artifactId = artifact
+            version = ver
 
             from(components["java"])
         }
