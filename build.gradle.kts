@@ -27,12 +27,14 @@ tasks.test {
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
 }
+
 tasks {
     named<ShadowJar>("shadowJar") {
         mergeServiceFiles()
         archiveBaseName.set("SimpleContext")
     }
 }
+
 artifacts {
     archives(tasks.named("shadowJar"))
 }
