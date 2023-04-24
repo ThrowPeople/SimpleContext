@@ -1,5 +1,4 @@
-It's just a project like a toy, it's not very well implementation, bu to be taken seriously
-
+It's just a project like a toy, it's not very well implementation.
 # SimpleContext
 
 A Simple Web Framework written in kotlin
